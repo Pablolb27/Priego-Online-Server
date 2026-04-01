@@ -9,21 +9,21 @@ const handleLogin = async (socket, io, data) => {
     const { name } = payload;
 
     if (!name) {
-      return socket.emit('login:error', { message: 'Nombre requerido' });
+      return socket.emit('player:login:error', { message: 'Nombre requerido' });
     }
 
     // Buscamos la plantilla real en la DB
     const templatePlayer = await Player.findOne({ name: 'player_default' }).lean();
 
     if (!templatePlayer) {
-      return socket.emit('login:error', { message: 'Personaje no encontrado.' });
+      return socket.emit('player:login:error', { message: 'Personaje no encontrado.' });
     }
 
     // Cargamos en RAM
     state.players[socket.id] = { ...templatePlayer, name, id: socket.id };
 
     //ENVIA AL CLIENTE
-    socket.emit('login:success', {
+    socket.emit('player:login:success', {
       player: state.players[socket.id],
       playerList: Object.values(state.players).filter(p => p.socketId !== socket.id) ?? []
     });
@@ -34,10 +34,10 @@ const handleLogin = async (socket, io, data) => {
     //LOG DEL SV
     console.log(`[Login] ${name} entró al mundo Priego Online.`);
   } catch (error) {
-    socket.emit('login:error', { message: 'Error de formato o servidor.' });
+    socket.emit('playerlogin:error', { message: 'Error de formato o servidor.' });
 
     //LOG DEL SV
-    console.error('❌ Error en login:', error);
+    console.error('❌ Error en player login:', error);
   }
 };
 
