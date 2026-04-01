@@ -34,13 +34,12 @@ const MONGO_URI = process.env.MONGO_URI;
 
 // --- CONEXIÓN A DB Y ARRANQUE ---
 mongoose.connect(MONGO_URI).then(() => {
-    console.log("🏠 Conectado a MongoDB LOCAL (127.0.0.1)");
-
     // Solo arrancamos el servidor HTTP/Sockets si la DB está lista
     server.listen(PORT, () => {
-        console.log(`===========================================`);
+        console.log(`\n===========================================`);
+        console.log(` Conectado a MongoDB LOCAL (127.0.0.1)     `);
         console.log(` SERVIDOR RPG ONLINE CORRIENDO EN ${PORT}  `);
-        console.log(`===========================================`);
+        console.log(`===========================================\n`);
     });
 }).catch(err => {
     console.error("❌ Error crítico al conectar a MongoDB:");

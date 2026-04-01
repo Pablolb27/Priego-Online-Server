@@ -1,24 +1,22 @@
 const Player = require('../models/Player');
 const state = require('../entities/GameStage');
+const { getBody } = require('../utils');
 
 const handleLogin = async (socket, io, data) => {
   try {
     // Soporte para body (por si viene de tu herramienta de testeo)
-    const payload =
-      typeof data.body === 'string' ? JSON.parse(data.body) : data.body || data;
+    const payload = getBody(data);
     const { name } = payload;
 
-    if (!name)
+    if (!name) {
       return socket.emit('login:error', { message: 'Nombre requerido' });
+    }
 
     // Buscamos la plantilla real en la DB
-    const templatePlayer = await Player.findOne({ name: '' }).lean();
+    const templatePlayer = await Player.findOne({ name: 'player_default' }).lean();
 
     if (!templatePlayer) {
-      console.log(`[Login] Fallido: No se recupero el player por defecto`);
-      return socket.emit('login:error', {
-        message: 'Personaje no encontrado.',
-      });
+      return socket.emit('login:error', { message: 'Personaje no encontrado.' });
     }
 
     // Cargamos en RAM
@@ -33,20 +31,27 @@ const handleLogin = async (socket, io, data) => {
     //ENVIA A TODOS MENOS AL CLIENTE
     io.except(socket.id).emit('player:add', state.players[socket.id]);
 
+    //LOG DEL SV
     console.log(`[Login] ${name} entró al mundo Priego Online.`);
   } catch (error) {
     socket.emit('login:error', { message: 'Error de formato o servidor.' });
 
+    //LOG DEL SV
     console.error('❌ Error en login:', error);
   }
 };
 
-const handleLogout = (socket) => {
+const handleLogout = (socket, io) => {
   const player = state?.players[socket.id];
 
   if (player) {
-    console.log(`[Logout] ${player.name} se ha desconectado.`);
     delete state.players[socket.id];
+
+    //ENVIO DESCONEXION A PLAYERS
+    io.except(socket.id).emit('player:remove', socket.id);
+
+    //LOG DEL SV
+    console.log(`[Logout] ${player.name} se ha desconectado.`);
   }
 };
 
