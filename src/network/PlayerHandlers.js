@@ -1,6 +1,6 @@
 const Player = require('../models/Player');
 const state = require('../entities/GameStage');
-const { getBody } = require('../utils');
+const { getBody, calcRandomPosition } = require('../utils');
 
 const handleLogin = async (socket, io, data) => {
   try {
@@ -19,8 +19,15 @@ const handleLogin = async (socket, io, data) => {
       return socket.emit('player:login:error', { message: 'Personaje no encontrado.' });
     }
 
+    const randomPosition = calcRandomPosition(templatePlayer.map);
+
     // Cargamos en RAM
-    state.players[socket.id] = { ...templatePlayer, name, id: socket.id };
+    state.players[socket.id] = {
+      ...templatePlayer,
+      id: socket.id,
+      name,
+      position: randomPosition
+    };
 
     //ENVIA AL CLIENTE
     socket.emit('player:login:success', {

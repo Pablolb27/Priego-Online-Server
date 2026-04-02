@@ -37,8 +37,10 @@ mongoose.connect(MONGO_URI).then(() => {
     // Solo arrancamos el servidor HTTP/Sockets si la DB está lista
     server.listen(PORT, () => {
         console.log(`\n===========================================`);
-        console.log(` Conectado a MongoDB LOCAL (127.0.0.1)     `);
+        console.log(`   Conectado a MongoDB LOCAL (127.0.0.1)   `);
         console.log(` SERVIDOR RPG ONLINE CORRIENDO EN ${PORT}  `);
+        console.log(`----------SERVIDOR CREADO POR HEDA---------`);
+        console.log(`                @PABLOLB27                 `);
         console.log(`===========================================\n`);
     });
 }).catch(err => {
