@@ -1,6 +1,7 @@
 {
   "name": "Priego-Online-Server",
   "version": "1.0.0",
+  "type": "module",
   "description": "\"# Priego-Online-Server\"",
   "main": "index.js",
   "scripts": {

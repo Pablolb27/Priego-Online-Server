@@ -1,13 +1,17 @@
-require('dotenv').config();
-const { handleLogin, handleLogout } = require('./PlayerHandlers');
+import 'dotenv/config';
+import { handleLogin, handleLogout } from './PlayerHandlers.js';
 
-module.exports = (io, socket) => {
+export const socketEvents = (io, socket) => {
     socket.on('disconnect', () => handleLogout(socket, io));
 
-    //PLAYER
+    // EVENTOS DE PLAYER
     socket.on('player:login', (data) => handleLogin(socket, io, data));
     socket.on('player:logout', () => handleLogout(socket, io));
 
-    //CONSOLE
-    socket.on('console:general', () => handleConsoleGeneral(socket, io));
+    // EVENTOS DE CONSOLA
+    socket.on('console:general', () => {
+        if (typeof handleConsoleGeneral === 'function') {
+            handleConsoleGeneral(socket, io);
+        }
+    });
 };

@@ -1,16 +1,19 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const cors = require('cors');
+import cors from 'cors'; // Corregido: De require a import
+import 'dotenv/config';
+import express from 'express';
+import http from 'http';
+import mongoose from 'mongoose'; // Corregido: Importación estándar
+import { Server } from 'socket.io';
 
-const socketEvents = require('./network/index');
+// IMPORTANTE: En ESM siempre debes poner la extensión .js en tus archivos locales
+import { loadMaps } from './loaders/loadMaps.js';
+import { socketEvents } from './network/index.js';
 
 const app = express();
 app.use(cors());
 
 const server = http.createServer(app);
+
 const io = new Server(server, {
     cors: {
         origin: "*",
@@ -34,6 +37,9 @@ const MONGO_URI = process.env.MONGO_URI;
 
 // --- CONEXIÓN A DB Y ARRANQUE ---
 mongoose.connect(MONGO_URI).then(() => {
+    // CARGA RECURSOS
+    loadMaps();
+
     // Solo arrancamos el servidor HTTP/Sockets si la DB está lista
     server.listen(PORT, () => {
         console.log(`\n===========================================`);
@@ -46,5 +52,5 @@ mongoose.connect(MONGO_URI).then(() => {
 }).catch(err => {
     console.error("❌ Error crítico al conectar a MongoDB:");
     console.error(err.message);
-    process.exit(1); // Cerramos el proceso si no hay DB
+    process.exit(1);
 });
