@@ -5,10 +5,7 @@ const PlayerSchema = new mongoose.Schema({
     clan: { type: String, default: "" },
     direction: { type: Number, default: 0 },
     map: { type: Number, default: 0 },
-    position: {
-        x: { type: Number, default: 20 },
-        y: { type: Number, default: 20 }
-    },
+    position: { x: Number, y: Number },
     default_head: Number,
     head: Number,
     default_body: Number,
