@@ -1,4 +1,4 @@
-import mapsData from './data/indices/maps.json' with { type: "json" };
+import mapsData from './data/maps.json' with { type: "json" };
 
 export const getBody = (data) => {
     return typeof data.body === 'string' ? JSON.parse(data.body) : data.body || data;
