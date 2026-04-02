@@ -2,7 +2,7 @@ import state from '../entities/GameStage.js';
 import Player from '../models/Player.js';
 import { calcRandomPosition, getBody } from '../utils.js';
 
-export const handleLogin = async (socket, io, data) => {
+export const handlePlayerLogin = async (socket, io, data) => {
   try {
     const name = getBody(data)?.name;
     const templatePlayer = await Player.findOne({ name: 'player_default' }).lean();
@@ -40,7 +40,7 @@ export const handleLogin = async (socket, io, data) => {
   }
 };
 
-export const handleLogout = (socket, io) => {
+export const handlePlayerLogout = (socket, io) => {
   const player = state.players[socket.id];
 
   if (player) {
@@ -56,4 +56,14 @@ export const handleLogout = (socket, io) => {
     // LOG DEL SV
     console.log(`[Logout] ${playerName} se ha desconectado.`);
   }
+};
+
+export const handlePlayerMove = (socket, io, data) => {
+  const newPosition = getBody(data).position;
+  const newDirection = getBody(data).direction;
+
+  state.players[socket.id].direction = newDirection;
+  state.players[socket.id].position = newPosition;
+
+  socket.broadcast.emit('player:update', state.players[socket.id]);
 };

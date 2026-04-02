@@ -1,17 +1,14 @@
 import 'dotenv/config';
-import { handleLogin, handleLogout } from './PlayerHandlers.js';
+import { handlePlayerLogin, handlePlayerLogout, handlePlayerMove } from './PlayerHandlers.js';
 
 export const socketEvents = (io, socket) => {
-    socket.on('disconnect', () => handleLogout(socket, io));
+    socket.on('disconnect', () => handlePlayerLogout(socket, io));
 
     // EVENTOS DE PLAYER
-    socket.on('player:login', (data) => handleLogin(socket, io, data));
-    socket.on('player:logout', () => handleLogout(socket, io));
+    socket.on('player:login', (data) => handlePlayerLogin(socket, io, data));
+    socket.on('player:logout', () => handlePlayerLogout(socket, io));
+    socket.on('player:move', (data) => handlePlayerMove(socket, io, data));
 
     // EVENTOS DE CONSOLA
-    socket.on('console:general', () => {
-        if (typeof handleConsoleGeneral === 'function') {
-            handleConsoleGeneral(socket, io);
-        }
-    });
+    //socket.on('console:general', () => handleConsoleGeneral(socket, io));
 };
