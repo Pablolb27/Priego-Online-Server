@@ -1,42 +1,35 @@
-// 1. Cambiamos require por import y añadimos .js
 import state from '../entities/GameStage.js';
 import Player from '../models/Player.js';
 import { calcRandomPosition, getBody } from '../utils.js';
 
 export const handleLogin = async (socket, io, data) => {
   try {
-    const payload = getBody(data);
-    const name = payload?.name;
-
-    if (!name) {
-      return socket.emit('player:login:error', { message: 'Nombre requerido' });
-    }
-
-    // Buscamos la plantilla real en la DB
+    const name = getBody(data)?.name;
     const templatePlayer = await Player.findOne({ name: 'player_default' }).lean();
+    const position = calcRandomPosition(templatePlayer.map);
 
-    if (!templatePlayer) {
-      console.warn(`⚠️ Intento de login fallido: No existe 'player_default' en la DB.`);
-      return socket.emit('player:login:error', { message: 'Personaje base no encontrado.' });
+    if (!name || !templatePlayer) {
+      return socket.emit('player:login:error', { message: 'Error al hacer Login.' });
     }
 
-    const randomPosition = calcRandomPosition(templatePlayer.map);
-
-    // Cargamos en RAM del servidor
+    // CARGAMOS EL PERSONAJE EN EL STATE
     state.players[socket.id] = {
       ...templatePlayer,
       socketId: socket.id,
       name,
-      position: randomPosition
+      position
     };
 
-    // ENVIA AL CLIENTE: Sus datos y la lista de quiénes YA estaban
+    // ACTUALIZAMOS EL MAPA EN EL STATE
+    state.maps[templatePlayer.map][position.x][position.y].isBloqued = socket.id;
+
+    // ENVIA AL CLIENTE
     socket.emit('player:login:success', {
       player: state.players[socket.id],
       playerList: Object.values(state.players).filter(p => p.socketId !== socket.id)
     });
 
-    // ENVIA A TODOS LOS DEMÁS: "Dibujad a este nuevo jugador"
+    // ENVIA A TODOS LOS DEMÁS
     socket.broadcast.emit('player:add', state.players[socket.id]);
 
     // LOG DEL SV
@@ -53,10 +46,11 @@ export const handleLogout = (socket, io) => {
   if (player) {
     const playerName = player.name;
 
-    // Eliminamos de la RAM
+    // ELIMINAMOS DEL STATE
     delete state.players[socket.id];
+    delete state.maps[player.map][player.position.x][player.position.y].isBloqued;
 
-    // Avisamos a los demás para que des-rendericen el sprite
+    //ENVIAMOS A TODOS LOS CLIENTES
     io.emit('player:remove', socket.id);
 
     // LOG DEL SV
