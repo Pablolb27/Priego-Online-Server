@@ -2,7 +2,7 @@ import state from '../entities/GameStage.js';
 import Player from '../models/Player.js';
 import { calcRandomPosition, getBody } from '../utils.js';
 
-export const handlePlayerLogin = async (socket, io, data) => {
+export const handlePlayerLogin = async (socket, data) => {
   try {
     const name = getBody(data)?.name;
     const templatePlayer = await Player.findOne({ name: 'player_default' }).lean();
@@ -15,7 +15,7 @@ export const handlePlayerLogin = async (socket, io, data) => {
     // CARGAMOS EL PERSONAJE EN EL STATE
     state.players[socket.id] = {
       ...templatePlayer,
-      socketId: socket.id,
+      id: socket.id,
       name,
       position
     };
@@ -58,7 +58,7 @@ export const handlePlayerLogout = (socket, io) => {
   }
 };
 
-export const handlePlayerMove = (socket, io, data) => {
+export const handlePlayerMove = (socket, data) => {
   const newPosition = getBody(data).position;
   const newDirection = getBody(data).direction;
 
@@ -66,4 +66,14 @@ export const handlePlayerMove = (socket, io, data) => {
   state.players[socket.id].position = newPosition;
 
   socket.broadcast.emit('player:update', state.players[socket.id]);
+};
+
+export const handlePlayerChat = (socket, data) => {
+  const message = getBody(data).message;
+  const response = {
+    playerId: socket.id,
+    message
+  }
+
+  socket.broadcast.emit('player:chat', response);
 };
