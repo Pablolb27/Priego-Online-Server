@@ -63,9 +63,12 @@ export const handlePlayerMove = (socket, data) => {
   const newDirection = getBody(data).direction;
 
   state.players[socket.id].direction = newDirection;
-  state.players[socket.id].position = newPosition;
+  state.players[socket.id].newPosition = newPosition;
 
   socket.broadcast.emit('player:update', state.players[socket.id]);
+
+  state.players[socket.id].position = newPosition;
+  state.players[socket.id].newPosition = null;
 };
 
 export const handlePlayerChat = (socket, data) => {
