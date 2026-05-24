@@ -26,7 +26,7 @@ export const handlePlayerLogin = async (socket, data) => {
     // ENVIA AL CLIENTE
     socket.emit('player:login:success', {
       player: state.players[socket.id],
-      playerList: Object.values(state.players).filter(p => p.socketId !== socket.id)
+      playerList: Object.values(state.players).filter(p => p.id !== socket.id)
     });
 
     // ENVIA A TODOS LOS DEMÁS
@@ -65,10 +65,12 @@ export const handlePlayerMove = (socket, data) => {
   state.players[socket.id].direction = newDirection;
   state.players[socket.id].newPosition = newPosition;
 
-  socket.broadcast.emit('player:update', state.players[socket.id]);
+  const playerEmit = { ...state.players[socket.id] };
 
   state.players[socket.id].position = newPosition;
   state.players[socket.id].newPosition = null;
+
+  socket.broadcast.emit('player:update', playerEmit);
 };
 
 export const handlePlayerChat = (socket, data) => {
@@ -77,6 +79,12 @@ export const handlePlayerChat = (socket, data) => {
     playerId: socket.id,
     message
   }
+
+  state.players[socket.id].text = { message };
+
+  setTimeout(() => {
+    state.players[socket.id].text = {};
+  }, 5000);
 
   socket.broadcast.emit('player:chat', response);
 };
