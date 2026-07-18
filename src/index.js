@@ -16,8 +16,9 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
+        origin: "https://priego-online.vercel.app",
+        methods: ["GET", "POST"],
+        credentials: true
     }
 });
 
@@ -46,7 +47,7 @@ if (!MONGO_URI) {
         console.log(`----------SERVIDOR CREADO POR HEDA---------`);
         console.log(`                @PABLOLB27                 `);
         console.log(`===========================================\n`);
-        
+
         loadMaps();
     }).catch(err => {
         console.error("❌ Error crítico al conectar a MongoDB:", err.message);
@@ -55,9 +56,9 @@ if (!MONGO_URI) {
 
 // Endpoint de control
 app.get('/', (req, res) => {
-    res.json({ 
-        status: "Servidor de Priego-Online activo en Vercel", 
-        db: mongoose.connection.readyState === 1 ? "Conectado" : "Conectando/Desconectado" 
+    res.json({
+        status: "Servidor de Priego-Online activo en Vercel",
+        db: mongoose.connection.readyState === 1 ? "Conectado" : "Conectando/Desconectado"
     });
 });
 
