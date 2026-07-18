@@ -35,22 +35,22 @@ io.on('connection', (socket) => {
 const PORT = process.env.PORT || 7666;
 const MONGO_URI = process.env.MONGO_URI;
 
-// --- CONEXIÓN A DB Y ARRANQUE ---
-mongoose.connect(MONGO_URI).then(() => {
-    // CARGA RECURSOS
-    loadMaps();
-
-    // Solo arrancamos el servidor HTTP/Sockets si la DB está lista
-    server.listen(PORT, () => {
+// --- CONEXIÓN A DB Y ENRUTAMIENTO ---
+if (!MONGO_URI) {
+    console.error("❌ Error crítico: MONGO_URI es undefined en las variables de entorno de Vercel.");
+} else {
+    mongoose.connect(MONGO_URI).then(() => {
+        // En Vercel verás este log en la pestaña "Logs" cuando llegue la primera petición
         console.log(`\n===========================================`);
-        console.log(`   Conectado a MongoDB LOCAL (127.0.0.1)   `);
-        console.log(` SERVIDOR RPG ONLINE CORRIENDO EN ${PORT}  `);
+        console.log(`     Conectado a MongoDB ATLAS (Nube)      `);
+        console.log(`   SERVIDOR EN VERCEL INICIALIZADO         `);
         console.log(`----------SERVIDOR CREADO POR HEDA---------`);
         console.log(`                @PABLOLB27                 `);
         console.log(`===========================================\n`);
+        
+        // Cargamos recursos (aunque pasemos de ellos ahora, que no rompa)
+        loadMaps();
+    }).catch(err => {
+        console.error("❌ Error crítico al conectar a MongoDB:", err.message);
     });
-}).catch(err => {
-    console.error("❌ Error crítico al conectar a MongoDB:");
-    console.error(err.message);
-    process.exit(1);
-});
+}
