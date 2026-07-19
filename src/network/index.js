@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { handlePlayerChat, handlePlayerLogin, handlePlayerLogout, handlePlayerMove } from './PlayerHandlers.js';
+import { handleBotAdd } from './BotHandlers.js';
 
 export const socketEvents = (io, socket) => {
     socket.on('disconnect', () => handlePlayerLogout(socket, io));
@@ -9,4 +10,7 @@ export const socketEvents = (io, socket) => {
     socket.on('player:logout', () => handlePlayerLogout(socket, io));
     socket.on('player:move', (data) => handlePlayerMove(socket, data));
     socket.on('player:chat', (data) => handlePlayerChat(socket, data));
+
+    //EVENTOS DE BOT
+    socket.on('bot:add', (data) => handleBotAdd(socket));
 };

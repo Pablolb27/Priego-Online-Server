@@ -1,6 +1,7 @@
 const gameStage = {
     maps: {},
-    players: {}
+    players: {},
+    bots: {}
 };
 
 export default gameStage;

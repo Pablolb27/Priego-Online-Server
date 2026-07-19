@@ -9,10 +9,11 @@ import { loadMaps } from './loaders/loadMaps.js';
 import { socketEvents } from './network/index.js';
 
 const app = express();
+const origin = process.env.NODE_ENV === 'production' ? 'https://priego-online.vercel.app' : '*';
 
 // CORS configurado para aceptar tu cliente de Vercel en producción
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' ? 'https://priego-online.vercel.app' : '*',
+    origin,
     credentials: true
 }));
 
@@ -20,7 +21,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: process.env.NODE_ENV === 'production' ? 'https://priego-online.vercel.app' : '*',
+        origin,
         methods: ["GET", "POST"],
         credentials: true
     }
