@@ -28,5 +28,23 @@ export const handleBotAdd = async (socket) => {
 };
 
 export const handleBotRemove = async (socket) => {
-    console.log('remove bot');
+    const botIds = Object.keys(state?.bots || {});
+
+    if (botIds.length > 0) {
+        // 2. Elegimos una clave (ID) al azar
+        const randomIndex = Math.floor(Math.random() * botIds.length);
+        const randomBotId = botIds[randomIndex];
+
+        // 3. Copiamos el objeto y eliminamos la propiedad elegida
+        const updatedBots = { ...state.bots };
+        delete updatedBots[randomBotId];
+
+        // 4. Actualizamos el estado
+        state.bots = updatedBots;
+
+        // 5. Emitimos el estado actualizado
+        socket.emit('bot:remove', state.bots);
+        socket.broadcast.emit('bot:remove', state.bots);
+        console.log(`[BOT] Se eliminó el bot con ID: ${randomBotId}`);
+    }
 };
