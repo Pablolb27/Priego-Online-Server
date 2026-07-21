@@ -26,3 +26,7 @@ export const handleBotAdd = async (socket) => {
     // LOG DEL SV
     console.log(`[BOT] Se añadió un bot.`);
 };
+
+export const handleBotRemove = async (socket) => {
+    console.log('remove bot');
+};

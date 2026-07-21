@@ -4,7 +4,6 @@ import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
 import { Server } from 'socket.io';
-
 import { loadMaps } from './loaders/loadMaps.js';
 import { socketEvents } from './network/index.js';
 
@@ -58,19 +57,17 @@ if (!MONGO_URI) {
 
 // UN SOLO LISTEN: Levanta el puerto al instante (así Render no te mete timeout por puerto cerrado)
 server.listen(PORT, () => {
-    const isLocal = !process.env.PORT;
     console.log(`\n===========================================`);
     console.log(` SERVIDOR RPG ONLINE ESCUCHANDO EN PUERTO ${PORT}`);
     console.log(`----------SERVIDOR CREADO POR HEDA---------`);
     console.log(`                 @PABLOLB27                `);
     console.log(`===========================================\n`);
-
     console.log("🔋 Iniciando conexión con base de datos remota...");
 
     // Conectamos a Mongo Atlas y cargamos mapas en segundo plano sin bloquear el puerto
     mongoose.connect(MONGO_URI)
         .then(() => {
-            console.log(`📦 DB: Conectado con éxito a MongoDB (${isLocal ? 'LOCAL' : 'ATLAS NUBE'})`);
+            console.log(`📦 DB: Conectado con éxito a MongoDB`);
             console.log(`🗺️ Cargando mapas de Priego-Online en memoria...`);
             loadMaps();
             console.log(`✅ ¡Mapas cargados y listos para los jugadores!`);

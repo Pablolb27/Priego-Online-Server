@@ -49,6 +49,8 @@ const PlayerSchema = new mongoose.Schema({
             return inv;
         }
     },
+}, { 
+  collection: 'players'
 });
 
 export default mongoose.model('Player', PlayerSchema);
