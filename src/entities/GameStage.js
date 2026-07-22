@@ -1,4 +1,5 @@
 const gameStage = {
+    movementBot: false,
     maps: {},
     players: {},
     bots: {}

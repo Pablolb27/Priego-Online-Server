@@ -40,7 +40,7 @@ export const handlePlayerLogin = async (socket, data) => {
   }
 };
 
-export const handlePlayerLogout = (socket, io) => {
+export const handlePlayerLogout = (socket) => {
   const player = state.players[socket.id];
 
   if (player) {
@@ -51,7 +51,7 @@ export const handlePlayerLogout = (socket, io) => {
     delete state.maps[player.map][player.position.x][player.position.y].isBloqued;
 
     //ENVIAMOS A TODOS LOS CLIENTES
-    io.emit('player:remove', socket.id);
+    socket.server.emit('player:remove', socket.id);
 
     // LOG DEL SV
     console.log(`[Logout] ${playerName} se ha desconectado.`);

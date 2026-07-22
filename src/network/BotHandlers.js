@@ -20,8 +20,7 @@ export const handleBotAdd = async (socket) => {
     state.maps[templateBot.map][position.x][position.y].isBloqued = key;
 
     // ENVIA A LOS USUARIOS
-    socket.emit('bot:add', state.bots[key]);
-    socket.broadcast.emit('bot:add', state.bots[key]);
+    socket.server.emit('bot:add', state.bots);
 
     // LOG DEL SV
     console.log(`[BOT] Se añadió un bot.`);
@@ -43,8 +42,14 @@ export const handleBotRemove = async (socket) => {
         state.bots = updatedBots;
 
         // 5. Emitimos el estado actualizado
-        socket.emit('bot:remove', state.bots);
-        socket.broadcast.emit('bot:remove', state.bots);
+        socket.server.emit('bot:remove', state.bots);
         console.log(`[BOT] Se eliminó el bot con ID: ${randomBotId}`);
     }
+};
+
+export const handleBotToggleMovement = async (socket) => {
+    state.movementBot = !state.movementBot;
+
+    socket.server.emit('bot:toggleMovement', state.movementBot);
+    console.log(`[BOT] Movimiento de BOT: ${state.movementBot}`);
 };
