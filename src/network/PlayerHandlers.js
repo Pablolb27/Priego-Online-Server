@@ -25,8 +25,10 @@ export const handlePlayerLogin = async (socket, data) => {
 
     // ENVIA AL CLIENTE
     socket.emit('player:login:success', {
+      movementBot: state.movementBot,
       player: state.players[socket.id],
-      playerList: Object.values(state.players).filter(p => p.id !== socket.id)
+      playerList: Object.values(state.players).filter(p => p.id !== socket.id),
+      bots: state.bots
     });
 
     // ENVIA A TODOS LOS DEMÁS
