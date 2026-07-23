@@ -13,11 +13,15 @@ export const calcRandomPosition = (map) => {
     do {
         x = Math.floor(Math.random() * mapData.maxX);
         y = Math.floor(Math.random() * mapData.maxY);
-    } while (isLegalPosition(map, x, y));
+    } while (!isLegalPosition(map, x, y));
 
     return { x, y };
 }
 
 export const isLegalPosition = (map, x, y) => {
-    return state.maps[map][x][y].isBloqued;
+    return state.maps &&
+        state.maps[map] &&
+        state.maps[map][x] &&
+        state.maps[map][x][y] &&
+        !state.maps[map][x][y].isBloqued;
 }

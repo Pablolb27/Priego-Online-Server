@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 import { loadMaps } from './loaders/loadMaps.js';
 import { socketEvents } from './network/index.js';
+import { calcMovementBOT } from './sistems/Bot.js';
 
 const app = express();
 const origin = process.env.NODE_ENV === 'production' ? 'https://priego-online.vercel.app' : '*';
@@ -28,8 +29,8 @@ const io = new Server(server, {
 
 // --- EL WORLD TICK (10 ticks por segundo para la lógica del AO) ---
 setInterval(() => {
-    // updateWorld(io);
-}, 100);
+    calcMovementBOT(io);
+}, 250);
 
 // --- GESTIÓN DE CONEXIONES ---
 io.on('connection', (socket) => {

@@ -1,5 +1,7 @@
 import state from '../entities/GameStage.js';
 import Player from '../models/Player.js';
+import { chatGeneral } from '../sistems/Chat.js';
+import { playerMovement } from '../sistems/Movement.js';
 import { calcRandomPosition, getBody } from '../utils.js';
 
 export const handlePlayerLogin = async (socket, data) => {
@@ -61,32 +63,9 @@ export const handlePlayerLogout = (socket) => {
 };
 
 export const handlePlayerMove = (socket, data) => {
-  const newPosition = getBody(data).position;
-  const newDirection = getBody(data).direction;
-
-  state.players[socket.id].direction = newDirection;
-  state.players[socket.id].newPosition = newPosition;
-
-  const playerEmit = { ...state.players[socket.id] };
-
-  state.players[socket.id].position = newPosition;
-  state.players[socket.id].newPosition = null;
-
-  socket.broadcast.emit('player:update', playerEmit);
+  playerMovement(socket, data);
 };
 
 export const handlePlayerChat = (socket, data) => {
-  const message = getBody(data).message;
-  const response = {
-    playerId: socket.id,
-    message
-  }
-
-  state.players[socket.id].text = { message };
-
-  setTimeout(() => {
-    state.players[socket.id].text = {};
-  }, 5000);
-
-  socket.broadcast.emit('player:chat', response);
+  chatGeneral(socket, data);
 };
