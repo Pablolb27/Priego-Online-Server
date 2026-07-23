@@ -1,3 +1,6 @@
+import { getBody } from '../utils.js';
+import state from '../entities/GameStage.js';
+
 export const chatGeneral = (socket, data) => {
     const message = getBody(data).message;
     const response = {
