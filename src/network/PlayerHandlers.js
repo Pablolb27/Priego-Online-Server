@@ -1,6 +1,7 @@
 import state from '../entities/GameStage.js';
 import Player from '../models/Player.js';
 import { chatGeneral } from '../sistems/Chat.js';
+import { toggleEquipar } from '../sistems/Items.js';
 import { playerMovement } from '../sistems/Movement.js';
 import { calcRandomPosition, getBody } from '../utils.js';
 
@@ -68,4 +69,8 @@ export const handlePlayerMove = (socket, data) => {
 
 export const handlePlayerChat = (socket, data) => {
   chatGeneral(socket, data);
+};
+
+export const handleToggleEquipar = (socket, data) => {
+  toggleEquipar(socket, data);
 };

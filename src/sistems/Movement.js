@@ -13,7 +13,7 @@ export const playerMovement = (socket, data) => {
     state.players[socket.id].position = newPosition;
     state.players[socket.id].newPosition = null;
 
-    socket.broadcast.emit('player:update', playerEmit);
+    socket.broadcast.emit('player:updatePosition', playerEmit);
 }
 
 export const botMovement = (socket, data) => {
@@ -28,5 +28,5 @@ export const botMovement = (socket, data) => {
     state.players[socket.id].position = newPosition;
     state.players[socket.id].newPosition = null;
 
-    socket.broadcast.emit('player:update', playerEmit);
+    socket.broadcast.emit('player:updatePosition', playerEmit);
 }

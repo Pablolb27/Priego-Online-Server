@@ -1,0 +1,22 @@
+{
+    "0": {
+        "name": "Túnica del Dragón (Alto/as)",
+        "type": 1,
+        "body": 3,
+        "grhIndex": "89",
+        "maxDef": 6,
+        "minDef": 6,
+        "minDefMag": 20,
+        "maxDefMag": 20
+    },
+    "1": {
+        "name": "Túnica Perseus (Alto/as)",
+        "type": 1,
+        "body": 2,
+        "grhIndex": "90",
+        "maxDef": 10,
+        "minDef": 10,
+        "minDefMag": 17,
+        "maxDefMag": 17
+    }
+}
